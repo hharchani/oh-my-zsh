@@ -1,5 +1,9 @@
 # vim:ft=zsh ts=2 sw=2 sts=2
 
+current_ip_addr() {
+    ip -o addr show | grep -v inet6 |cut -d' ' -f2,7 | cut -d'/' -f1 | grep -v lo | paste -d"|" -s | sed "s/|/ | /g"
+}
+
 rvm_current() {
   rvm current 2>/dev/null
 }
@@ -9,8 +13,8 @@ rbenv_version() {
 }
 
 PROMPT='
-%{$fg_bold[green]%}${PWD/#$HOME/~}%{$reset_color%}$(git_prompt_info) ⌚ %{$fg_bold[red]%}%*%{$reset_color%}
-$ '
+%{$fg[yellow]%}${PWD/#$HOME/~}%{$reset_color%}$(git_prompt_info) ⌚ %{$fg_bold[red]%}%*%{$reset_color%} 📡  %{$fg[green]%}$(current_ip_addr)%{$reset_color%}
+%{$fg[cyan]%}❯%{$reset_color%} '
 
 # Must use Powerline font, for \uE0A0 to render.
 ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg[magenta]%}\uE0A0 "
