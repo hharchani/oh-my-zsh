@@ -1,6 +1,4 @@
-current_ip_addr() {
-    ip -o addr show | grep -v inet6 |cut -d' ' -f2,7 | cut -d'/' -f1 | grep -v lo | paste -d"|" -s | sed "s/|/ | /g"
-}
+#!/usr/bin/env zsh
 
 # ------------------------------------------------------------------------------
 #
@@ -21,6 +19,10 @@ current_ip_addr() {
 #   Twitter:  https://twitter.com/nicoulaj
 #
 # ------------------------------------------------------------------------------
+
+# Set required options
+#
+setopt prompt_subst
 
 # Load required modules
 #
@@ -47,7 +49,7 @@ git_dirty() {
 # Display information about the current repository
 #
 repo_information() {
-    echo "%F{blue}📂 ${vcs_info_msg_0_%%/.} %F{8}$vcs_info_msg_1_`git_dirty` $vcs_info_msg_2_%f"
+    echo "%F{blue}${vcs_info_msg_0_%%/.} %F{8}$vcs_info_msg_1_`git_dirty` $vcs_info_msg_2_%f"
 }
 
 # Displays the exec time of the last command if set threshold was exceeded
@@ -69,12 +71,12 @@ preexec() {
 #
 precmd() {
     vcs_info # Get version control info before we start outputting stuff
-    print -P "\n$(repo_information)⌚ %{$fg_bold[red]%}%*%{$reset_color%} 📡  %{$fg[green]%}$(current_ip_addr)%{$reset_color%} %F{yellow}$(cmd_exec_time)%f"
+    print -P "\n$(repo_information) %F{yellow}$(cmd_exec_time)%f"
 }
 
 # Define prompts
 #
-PROMPT="%(?.%F{cyan}.%F{red})❯%f%(?.%F{yellow}.%F{red})❯%f%(?.%F{green}.%F{red})❯%f " # Display a red prompt char on failure
+PROMPT="%(?.%F{magenta}.%F{red})❯%f " # Display a red prompt char on failure
 RPROMPT="%F{8}${SSH_TTY:+%n@%m}%f"    # Display username if connected via SSH
 
 # ------------------------------------------------------------------------------
@@ -102,4 +104,3 @@ RPROMPT="%F{8}${SSH_TTY:+%n@%m}%f"    # Display username if connected via SSH
 # %(?..) => prompt conditional - %(condition.true.false)
 #
 # ------------------------------------------------------------------------------
-# source ${0:h:A}/refined.zsh-theme
