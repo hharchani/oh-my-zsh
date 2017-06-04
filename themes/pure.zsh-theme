@@ -1,5 +1,13 @@
+current_wifi_ssid() {
+    iwgetid -r
+}
+
 current_ip_addr() {
     ip -o addr show | grep -v inet6 |cut -d' ' -f2,7 | cut -d'/' -f1 | grep -v lo | paste -d"|" -s | sed "s/|/ | /g"
+}
+
+get_http_proxy() {
+    echo $http_proxy | sed "s/^http:\/\///g" | sed "s/\/$//g"
 }
 
 # ------------------------------------------------------------------------------
@@ -69,7 +77,7 @@ preexec() {
 #
 precmd() {
     vcs_info # Get version control info before we start outputting stuff
-    print -P "\n$(repo_information)⌚ %{$fg_bold[red]%}%*%{$reset_color%} 📡  %{$fg[green]%}$(current_ip_addr)%{$reset_color%} %F{yellow}$(cmd_exec_time)%f"
+    print -P "\n$(repo_information)⌚ %{$fg_bold[red]%}%*%{$reset_color%} 📡  $(current_wifi_ssid) %{$fg[green]%}$(current_ip_addr)%{$reset_color%} 💻  %{$fg[blue]%}$(get_http_proxy)%{$reset_color%} %F{yellow}$(cmd_exec_time)%f"
 }
 
 # Define prompts
